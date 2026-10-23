@@ -1,0 +1,487 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTP Reval</title>
+<style>html,body{margin:0}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: sticky header, compact hero with 3 live figures, filter bar, responsive card grid, detail sheet + request drawer, sell steps, mobile QR block. */
+:root{
+  --bg:#ECEFEE; --surface:#FFFFFF; --ink:#16262B; --muted:#58696E; --line:#D6DCDA; --line2:#B9C3C0;
+  --accent:#0D6A57; --accent-ink:#FFFFFF; --accent-soft:#DCEFE9; --signal:#F0B323; --signal-ink:#2A2000;
+  --ok:#1D7C4D; --ok-bg:#DDF1E5; --warn:#8F5A00; --warn-bg:#FBEBC8; --low:#A63A27; --low-bg:#F7DDD7;
+  --art:#E1E7E5;
+  --m-wood:#C49A6A; --m-pvc:#F7F8F8; --m-alu:#8A969B; --m-glass:#BEDAE6; --m-steel:#7C8B93; --m-cast:#4A5559;
+  --m-brick:#B9573A; --m-tuile:#C9673C; --m-t1:#2E7D75; --m-t2:#E7E4DB; --m-door:#E9E6DF;
+  --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10181B; --surface:#192326; --ink:#E8EEEC; --muted:#9AAAAE; --line:#2A383C; --line2:#3C4E53;
+  --accent:#3FC1A0; --accent-ink:#052019; --accent-soft:#1B3A34; --signal:#F2B93B; --signal-ink:#2A2000;
+  --ok:#5CD08E; --ok-bg:#183A27; --warn:#F2B94B; --warn-bg:#3D2F10; --low:#F08A76; --low-bg:#43211B;
+  --art:#213036;
+  --m-wood:#A87B4C; --m-pvc:#D8DEDF; --m-alu:#6E7C82; --m-glass:#3E6272; --m-steel:#8B9AA2; --m-cast:#6A777B;
+  --m-brick:#C2603F; --m-tuile:#CC6D44; --m-t1:#3A9086; --m-t2:#CFCBC0; --m-door:#C9C6BE;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10181B; --surface:#192326; --ink:#E8EEEC; --muted:#9AAAAE; --line:#2A383C; --line2:#3C4E53;
+  --accent:#3FC1A0; --accent-ink:#052019; --accent-soft:#1B3A34; --signal:#F2B93B; --signal-ink:#2A2000;
+  --ok:#5CD08E; --ok-bg:#183A27; --warn:#F2B94B; --warn-bg:#3D2F10; --low:#F08A76; --low-bg:#43211B;
+  --art:#213036;
+  --m-wood:#A87B4C; --m-pvc:#D8DEDF; --m-alu:#6E7C82; --m-glass:#3E6272; --m-steel:#8B9AA2; --m-cast:#6A777B;
+  --m-brick:#C2603F; --m-tuile:#CC6D44; --m-t1:#3A9086; --m-t2:#CFCBC0; --m-door:#C9C6BE;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--surface);border-bottom:1px solid var(--line);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:60px;flex-wrap:wrap;padding-block:8px}
+.brand{display:flex;align-items:center;gap:10px;font:800 22px/1 var(--display);letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.brand svg{width:30px;height:30px;flex:none}
+.brand b{color:var(--accent);font-weight:800}
+.nav{display:flex;gap:4px;margin-left:12px}
+.nav a{padding:8px 12px;border-radius:6px;color:var(--muted);text-decoration:none;font-weight:500}
+.nav a:hover{color:var(--ink);background:var(--bg)}
+.spacer{flex:1}
+.btn{border:1px solid var(--line2);background:var(--surface);border-radius:8px;padding:9px 14px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.signal{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.count{background:var(--signal);color:var(--signal-ink);border-radius:99px;min-width:22px;height:22px;display:inline-grid;place-items:center;font:600 12px var(--mono);padding-inline:6px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px 48px;align-items:end;padding-block:44px 28px}
+.hero h1{font:800 clamp(34px,5.4vw,60px)/1.02 var(--display);letter-spacing:-.03em;margin:0 0 14px;text-wrap:balance}
+.hero p{margin:0;max-width:52ch;color:var(--muted);font-size:17px}
+.figs{display:grid;gap:0;border-top:2px solid var(--ink)}
+.fig{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
+.fig span{color:var(--muted)}
+.fig strong{font:700 26px/1 var(--display);font-variant-numeric:tabular-nums}
+
+/* filters */
+.bar{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;padding-block:14px;border-block:1px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line2);background:transparent;border-radius:99px;padding:6px 13px;font-weight:500;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.field{background:var(--surface);border:1px solid var(--line2);border-radius:8px;padding:8px 12px;min-width:0}
+.search{flex:1 1 200px;max-width:320px}
+.check{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-weight:500}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+.result{color:var(--muted);padding-block:16px 12px;font-size:14px}
+
+/* grid + cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:18px;padding-bottom:56px;list-style:none;margin:0;padding-inline:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0;min-width:0;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.art-box{background:var(--art);aspect-ratio:4/3;display:block;position:relative}
+.art{width:100%;height:100%;display:block}
+.grade{position:absolute;top:10px;left:10px;background:var(--surface);border:1px solid var(--line2);border-radius:5px;padding:2px 8px;font:500 12px var(--mono)}
+.save{position:absolute;top:10px;right:10px;background:var(--signal);color:var(--signal-ink);border-radius:5px;padding:2px 8px;font:600 12px var(--mono)}
+.card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.ref{font:400 12px var(--mono);color:var(--muted)}
+.card h3{font:700 18px/1.2 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.dimline{color:var(--muted);font-size:14px}
+.priceline{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
+.price{font:700 24px/1 var(--display);font-variant-numeric:tabular-nums}
+.price small{font:500 13px var(--body);color:var(--muted)}
+.old{color:var(--muted);text-decoration:line-through;font-size:14px;font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:3px 10px;font-size:13px;font-weight:600;width:fit-content}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.low{background:var(--low-bg);color:var(--low)}
+.empty{grid-column:1/-1;padding:48px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line2);border-radius:10px}
+
+/* overlay sheets */
+.scrim{position:fixed;inset:0;background:rgba(10,20,22,.55);z-index:70;display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:max(16px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.sheet{background:var(--surface);border-radius:12px;width:100%;max-width:960px;margin-block:auto;position:relative;border:1px solid var(--line)}
+.sheet.narrow{max-width:520px}
+.x{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);background:var(--surface);z-index:2;font-size:18px;line-height:1}
+.detail{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.detail .art-box{aspect-ratio:auto;min-height:340px;border-radius:12px 0 0 12px}
+.detail .art-box .art{position:absolute;inset:0}
+.info{padding:28px 28px 26px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.info h2{font:800 28px/1.1 var(--display);letter-spacing:-.02em;margin:0;text-wrap:balance;padding-right:36px}
+.info p{margin:0;color:var(--muted)}
+.specs{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);border-top:1px solid var(--line)}
+.specs dt,.specs dd{margin:0;padding:8px 0;border-bottom:1px solid var(--line)}
+.specs dt{color:var(--muted);padding-right:18px}
+.specs dd{font-weight:500;overflow-wrap:anywhere}
+.buy{background:var(--bg);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.buy-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.step{display:inline-flex;border:1px solid var(--line2);border-radius:8px;background:var(--surface);overflow:hidden}
+.step button{width:40px;height:40px;border:0;background:transparent;font-size:20px}
+.step button:hover{background:var(--accent-soft)}
+.step output{min-width:44px;display:grid;place-items:center;font:600 16px var(--mono)}
+.total{font:700 22px var(--display);font-variant-numeric:tabular-nums}
+.eco{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted)}
+.eco i{flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:var(--accent)}
+
+/* request drawer */
+.drawer{margin-left:auto;max-width:460px;min-height:100%;border-radius:12px;display:flex;flex-direction:column}
+.drawer h2{font:800 24px var(--display);margin:0;padding:22px 24px 12px;letter-spacing:-.02em}
+.lines{list-style:none;margin:0;padding:0 24px;display:flex;flex-direction:column}
+.line{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.line .art-box{aspect-ratio:1;border-radius:6px;overflow:hidden}
+.line b{display:block;font-weight:600;line-height:1.25}
+.line small{color:var(--muted)}
+.line button.rm{border:0;background:none;color:var(--low);font-size:13px;padding:0;text-decoration:underline}
+.form{padding:16px 24px 24px;display:grid;gap:12px}
+.form label{display:grid;gap:4px;font-weight:500;font-size:14px}
+.form .field{width:100%}
+.sum{display:flex;justify-content:space-between;align-items:baseline;padding:14px 24px 0;font-weight:600}
+.sum strong{font:800 24px var(--display)}
+.note{font-size:13px;color:var(--muted)}
+.ok-msg{padding:24px;display:grid;gap:10px}
+.ok-msg h3{font:800 22px var(--display);margin:0}
+
+/* sections */
+.sec{padding-block:56px;border-top:1px solid var(--line)}
+.sec h2{font:800 clamp(26px,3.6vw,38px)/1.05 var(--display);letter-spacing:-.025em;margin:0 0 12px;text-wrap:balance}
+.sec>.wrap>p.lead{color:var(--muted);max-width:60ch;margin:0 0 28px;font-size:16px}
+.sell{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px solid var(--line);counter-increment:s}
+.steps li::before{content:counter(s);width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:700 16px var(--display)}
+.steps b{display:block;font:700 18px var(--display)}
+.steps span{color:var(--muted)}
+.sellform{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;align-self:start}
+.sellform h3{font:700 20px var(--display);margin:0 0 12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mobile{display:grid;grid-template-columns:auto minmax(0,1fr);gap:28px;align-items:center}
+.qrbox{background:#fff;padding:14px;border-radius:12px;border:1px solid var(--line);width:200px;height:200px}
+.qrbox img{width:100%;height:100%;display:block;image-rendering:pixelated}
+.foot{border-top:1px solid var(--line);padding-block:24px 40px;color:var(--muted);font-size:13px;display:flex;gap:12px 32px;flex-wrap:wrap;justify-content:space-between}
+.toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:8px;z-index:90;font-weight:500;max-width:calc(100% - 32px)}
+
+/* svg art */
+.art .o{stroke:var(--ink);stroke-opacity:.55;stroke-width:1.2;stroke-linejoin:round}
+.art .dim line{stroke:var(--muted);stroke-width:1}
+.art .dim text,.art .cap{fill:var(--ink);font:500 10.5px var(--mono)}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;padding-block:28px 20px}
+  .detail{grid-template-columns:1fr}
+  .detail .art-box{min-height:0;aspect-ratio:4/3;border-radius:12px 12px 0 0}
+  .sell{grid-template-columns:1fr;gap:28px}
+  .nav{display:none}
+}
+@media (max-width:520px){
+  .mobile{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .info{padding:20px 18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="#top" aria-label="BTP Reval, accueil">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="9" width="28" height="14" rx="2" fill="var(--accent)"/><path d="M9 16h14M16 9v14M9 9v7M23 16v7" stroke="var(--accent-ink)" stroke-width="1.6" fill="none"/><path d="M6 5.5A12 12 0 0 1 26 5.5" stroke="var(--signal)" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M26.5 2.5v4.5H22" stroke="var(--signal)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>BTP <b>Reval</b></span>
+  </a>
+  <nav class="nav" aria-label="Sections"><a href="#catalogue">Catalogue</a><a href="#vendre">Vendre</a></nav>
+  <span class="spacer"></span>
+  <button class="btn primary" id="openCart" aria-haspopup="dialog">Ma demande <span class="count" id="cartCount">0</span></button>
+</div></header>
+
+<main class="wrap" id="top">
+  <section class="hero" aria-labelledby="h1">
+    <div>
+      <h1 id="h1">Les matériaux du chantier d'hier, pour celui de demain.</h1>
+      <p>BTP Reval remet en vente les fenêtres, portes, poutres et autres éléments récupérés sur des chantiers de rénovation et de démolition. Chaque pièce est contrôlée, mesurée et proposée à un prix net.</p>
+    </div>
+    <div class="figs" aria-label="Chiffres du catalogue">
+      <div class="fig"><span>Références en ligne</span><strong id="fRefs">0</strong></div>
+      <div class="fig"><span>Économie moyenne face au neuf</span><strong id="fSave">0 %</strong></div>
+      <div class="fig"><span>Familles de matériaux</span><strong id="fCats">0</strong></div>
+    </div>
+  </section>
+
+  <section id="catalogue" aria-label="Catalogue">
+    <div class="bar">
+      <div class="chips" id="chips" role="group" aria-label="Famille de matériaux"></div>
+      <span class="spacer"></span>
+      <input class="field search" id="q" type="search" placeholder="Rechercher : fenêtre, chêne, 120 cm…" aria-label="Rechercher un matériau">
+      <select class="field" id="sort" aria-label="Trier">
+        <option value="rel">Tri : pertinence</option>
+        <option value="pa">Prix croissant</option>
+        <option value="pd">Prix décroissant</option>
+        <option value="eco">Plus forte économie</option>
+      </select>
+      <label class="check"><input type="checkbox" id="onlyStock"> En stock uniquement</label>
+    </div>
+    <div class="result" id="result" aria-live="polite"></div>
+    <ul class="grid" id="grid"></ul>
+  </section>
+</main>
+
+<section class="sec" id="vendre"><div class="wrap">
+  <h2>Vous démolissez ou rénovez ? Revendez ce qui est encore bon.</h2>
+  <p class="lead">Une porte saine ou une poutre en chêne n'a pas sa place en benne. Déposez votre lot, nous le contrôlons et le remettons en vente.</p>
+  <div class="sell">
+    <ol class="steps">
+      <li><div><b>Déposez votre lot</b><span>Type de matériau, quantité, dimensions, photos et ville du chantier.</span></div></li>
+      <li><div><b>Contrôle sous 48 h</b><span>Un technicien vérifie l'état, mesure les pièces et leur attribue un grade A, B ou C.</span></div></li>
+      <li><div><b>Mise en vente</b><span>La fiche est publiée avec dimensions, prix et stock. Vous êtes payé à la vente.</span></div></li>
+    </ol>
+    <form class="sellform" id="sellForm" novalidate>
+      <h3>Proposer un lot</h3>
+      <div class="form" style="padding:0">
+        <label for="sType">Matériau
+          <select class="field" id="sType"><option>Fenêtres</option><option>Portes</option><option>Poutres</option><option>Briques, tuiles, carrelage</option><option>Radiateurs et équipements</option></select>
+        </label>
+        <div class="row2">
+          <label for="sQty">Quantité<input class="field" id="sQty" type="number" min="1" value="10" inputmode="numeric"></label>
+          <label for="sCity">Ville du chantier<input class="field" id="sCity" type="text" placeholder="Orléans"></label>
+        </div>
+        <label for="sMail">E-mail<input class="field" id="sMail" type="email" placeholder="vous@entreprise.fr"></label>
+        <button class="btn primary" type="submit" style="justify-content:center">Envoyer mon lot</button>
+        <p class="note" id="sellNote">Version de démonstration : le formulaire n'envoie rien.</p>
+      </div>
+    </form>
+  </div>
+</div></section>
+
+<footer class="wrap foot"><span>BTP Reval, plateforme collaborative de réemploi des matériaux du BTP.</span><span>Catalogue d'exemple pour un projet de présentation : produits, prix et stocks illustratifs.</span></footer>
+
+<div id="layer"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* ---------- données ---------- */
+const CATS={fen:'Fenêtres',por:'Portes',pou:'Poutres',mac:'Maçonnerie et sol',equ:'Équipements'};
+const GRADE={A:'Comme neuf',B:'Bon état',C:'À reconditionner'};
+const ITEMS=[
+{id:'FEN-014',cat:'fen',name:'Fenêtre PVC blanc, 2 vantaux',kind:'window',leaves:2,mat:'pvc',w:120,h:135,dim:'120 × 135 cm',price:95,neuf:320,stock:12,unit:'pièce',grade:'A',origin:'Rénovation d\'une résidence',city:'Orléans (45)',co2:55,
+ specs:[['Matériau','PVC blanc, double vitrage 4/16/4'],['Ouverture','2 vantaux, oscillo-battant'],['Isolation','Uw ˜ 1,4 W/m²K'],['Quincaillerie','Poignées et paumelles d\'origine']],reco:'Nettoyage complet, joints remplacés, quincaillerie graissée.'},
+{id:'FEN-021',cat:'fen',name:'Fenêtre chêne, 1 vantail',kind:'window',leaves:1,mat:'wood',w:80,h:120,dim:'80 × 120 cm',price:70,neuf:260,stock:6,unit:'pièce',grade:'B',origin:'Maison de ville en réhabilitation',city:'Tours (37)',co2:35,
+ specs:[['Matériau','Chêne massif, double vitrage'],['Ouverture','1 vantail à la française'],['Finition','Lasure à reprendre'],['Quincaillerie','Espagnolette laiton']],reco:'Ponçage léger et vitrage vérifié. Lasure non refaite.'},
+{id:'FEN-033',cat:'fen',name:'Baie coulissante aluminium',kind:'slider',mat:'alu',w:240,h:215,dim:'240 × 215 cm',price:480,neuf:1400,stock:3,unit:'pièce',grade:'B',origin:'Bureaux désaffectés',city:'Blois (41)',co2:210,
+ specs:[['Matériau','Aluminium gris anthracite, double vitrage'],['Ouverture','2 vantaux coulissants'],['Isolation','Rupture de pont thermique'],['Poids','˜ 95 kg']],reco:'Galets de roulement changés, rails nettoyés.'},
+{id:'POR-008',cat:'por',name:'Porte intérieure postformée',kind:'door',style:'panel',mat:'door',w:83,h:204,dim:'83 × 204 cm',price:25,neuf:70,stock:28,unit:'pièce',grade:'A',origin:'Démolition d\'un immeuble de bureaux',city:'Orléans (45)',co2:12,
+ specs:[['Matériau','Âme alvéolaire, finition blanche'],['Épaisseur','40 mm'],['Sens','Réversible, à repercer'],['Livrée','Sans huisserie']],reco:'Dépoussiérée et contrôlée, sans choc ni gauchissement.'},
+{id:'POR-015',cat:'por',name:'Porte d\'entrée bois, vitrée',kind:'door',style:'entry',mat:'wood',w:90,h:215,dim:'90 × 215 cm',price:220,neuf:900,stock:2,unit:'pièce',grade:'A',origin:'Rénovation d\'une longère',city:'Chartres (28)',co2:70,
+ specs:[['Matériau','Chêne massif, 45 mm'],['Vitrage','Fenêtre haute, verre feuilleté'],['Serrure','Multipoints, 3 clés'],['Finition','Vernis, dernière couche récente']],reco:'Serrure révisée, joints d\'étanchéité neufs.'},
+{id:'POU-003',cat:'pou',name:'Poutre chêne massif',kind:'beam',mat:'wood',len:420,sw:20,sh:25,w:420,h:25,dim:'420 cm, section 20 × 25 cm',price:290,neuf:620,stock:9,unit:'pièce',grade:'A',origin:'Charpente d\'une grange',city:'Vendôme (41)',co2:140,
+ specs:[['Essence','Chêne, séché plus de 50 ans'],['Longueur','4,20 m'],['Section','20 × 25 cm'],['Poids','˜ 105 kg'],['Traitement','Contrôlé sans insectes ni humidité']],reco:'Brossée, traitée préventif, purge des clous.'},
+{id:'POU-011',cat:'pou',name:'Poutrelle acier IPE 200',kind:'beam',mat:'steel',len:600,sw:10,sh:20,w:600,h:20,dim:'600 cm, profil IPE 200',price:150,neuf:290,stock:5,unit:'pièce',grade:'B',origin:'Structure d\'un entrepôt',city:'Orléans (45)',co2:260,
+ specs:[['Profil','IPE 200 (100 × 200 mm)'],['Longueur','6,00 m'],['Nuance','S235'],['Poids','˜ 135 kg'],['Surface','Rouille de surface, sans corrosion profonde']],reco:'Grenaillée et protégée par une couche antirouille.'},
+{id:'POU-020',cat:'pou',name:'Solive sapin',kind:'beam',mat:'wood',len:300,sw:6.3,sh:17.5,w:300,h:17.5,dim:'300 cm, section 6,3 × 17,5 cm',price:9,neuf:19,stock:40,unit:'pièce',grade:'B',origin:'Plancher d\'un pavillon',city:'Orléans (45)',co2:9,
+ specs:[['Essence','Sapin / épicéa'],['Longueur','3,00 m'],['Section','6,3 × 17,5 cm'],['Usage','Plancher, ossature, aménagements'],['Remarque','Trous de pointes à prévoir']],reco:'Triées une à une, purgées des pointes.'},
+{id:'MAC-002',cat:'mac',name:'Briques pleines anciennes',kind:'brick',mat:'brick',w:22,h:6.5,dim:'22 × 10,5 × 6,5 cm',price:180,neuf:420,stock:4,unit:'palette de 400',grade:'B',origin:'Mur de clôture démonté',city:'Gien (45)',co2:150,
+ specs:[['Format','22 × 10,5 × 6,5 cm'],['Quantité','400 briques par palette'],['Usage','Parement, muret, cheminée'],['Aspect','Teintes variées, mortier nettoyé']],reco:'Nettoyage au marteau et à la brosse, tri des éclats.'},
+{id:'MAC-005',cat:'mac',name:'Tuiles mécaniques terre cuite',kind:'roof',mat:'tuile',w:42,h:26,dim:'˜ 22 tuiles/m²',price:110,neuf:350,stock:0,unit:'lot de 500',grade:'B',origin:'Toiture d\'une maison',city:'Montargis (45)',co2:120,arrivage:'arrivage sous 3 semaines',
+ specs:[['Matériau','Terre cuite, teinte rouge flammé'],['Densité','˜ 22 tuiles/m²'],['Quantité','500 tuiles par lot'],['Contrôle','Sans fissure, test d\'égouttage']],reco:'Lavage haute pression et tri des tuiles saines.'},
+{id:'MAC-009',cat:'mac',name:'Carreaux de ciment 20 × 20',kind:'tile',mat:'t1',w:20,h:20,dim:'20 × 20 cm, 14 m² dispo',price:38,neuf:95,stock:14,unit:'m²',grade:'B',origin:'Sol d\'un ancien commerce',city:'Orléans (45)',co2:18,
+ specs:[['Format','20 × 20 cm, épaisseur 16 mm'],['Motif','Losange bleu-vert et blanc cassé'],['Quantité','14 m² (350 carreaux)'],['Remarque','Patine d\'usage, à poser et cirer']],reco:'Décollés, brossés et débarrassés de leur colle.'},
+{id:'RAD-004',cat:'equ',name:'Radiateur fonte, 8 éléments',kind:'rad',mat:'cast',n:8,w:64,h:80,dim:'64 × 80 cm, 8 éléments',price:85,neuf:410,stock:2,unit:'pièce',grade:'A',origin:'Ancienne école',city:'Pithiviers (45)',co2:90,
+ specs:[['Matériau','Fonte, peinte'],['Éléments','8, entraxe 70 cm'],['Dimensions','64 × 80 cm, profondeur 20 cm'],['Poids','˜ 60 kg'],['Essai','Test de pression réussi']],reco:'Décapé, testé en pression, repeint en blanc.'}
+];
+const CAT_ORDER=['fen','por','pou','mac','equ'];
+
+/* ---------- utilitaires ---------- */
+const $=s=>document.querySelector(s);
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
+const cm=v=>String(v).replace('.',',');
+const saving=i=>Math.round((1-i.price/i.neuf)*100);
+const status=i=>i.stock>=5?['ok','En stock · '+i.stock]:i.stock>=1?['warn','Dernières pièces · '+i.stock]:['low','Sur réservation'];
+const byId=id=>ITEMS.find(i=>i.id===id);
+let toastT;
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
+
+/* ---------- dessin technique ---------- */
+const R=(x,y,w,h,fill,extra='')=>`<rect class="o" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" style="fill:${fill}" ${extra}/>`;
+const dimH=(x1,x2,y,l)=>`<g class="dim"><line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/><line x1="${x1}" y1="${y-4}" x2="${x1}" y2="${y+4}"/><line x1="${x2}" y1="${y-4}" x2="${x2}" y2="${y+4}"/><text x="${(x1+x2)/2}" y="${y+13}" text-anchor="middle">${l}</text></g>`;
+const dimV=(x,y1,y2,l)=>`<g class="dim"><line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}"/><line x1="${x-4}" y1="${y1}" x2="${x+4}" y2="${y1}"/><line x1="${x-4}" y1="${y2}" x2="${x+4}" y2="${y2}"/><text transform="rotate(-90 ${x-6} ${(y1+y2)/2})" x="${x-6}" y="${(y1+y2)/2}" text-anchor="middle">${l}</text></g>`;
+const glass=(x,y,w,h)=>R(x,y,w,h,'var(--m-glass)')+`<polygon points="${x},${y+h*.55} ${x+w*.55},${y} ${x+w*.8},${y} ${x},${y+h*.82}" fill="#fff" opacity=".28"/>`;
+const cap=t=>`<text class="cap" x="160" y="222" text-anchor="middle">${t}</text>`;
+
+function drawBox(it){
+  const s=Math.min(220/it.w,150/it.h),w=it.w*s,h=it.h*s,x=165-w/2,y=104-h/2;
+  const fm=`var(--m-${it.mat})`;let b='';
+  const f=Math.max(5,Math.min(w,h)*.07);
+  if(it.kind==='window'){
+    b+=R(x,y,w,h,fm);
+    const n=it.leaves,lw=(w-2*f)/n,g=f*.8;
+    for(let i=0;i<n;i++){
+      const lx=x+f+i*lw;b+=R(lx,y+f,lw,h-2*f,fm)+glass(lx+g,y+f+g,lw-2*g,h-2*f-2*g);
+      const hingeLeft=(n===1)||i===0, hx=hingeLeft?lx+g:lx+lw-g, ox=hingeLeft?lx+lw-g:lx+g;
+      b+=`<polyline points="${ox},${y+f+g} ${hx},${y+h/2} ${ox},${y+h-f-g}" fill="none" stroke="var(--ink)" stroke-opacity=".5" stroke-dasharray="4 3"/>`;
+      const hdx=hingeLeft?lx+lw-g-1:lx+g-2;b+=R(hdx-(hingeLeft?4:0),y+h/2-8,6,16,'var(--ink)','opacity=".8"');
+    }
+    b+=dimH(x,x+w,y+h+14,cm(it.w)+' cm')+dimV(x-14,y,y+h,cm(it.h)+' cm');
+  } else if(it.kind==='slider'){
+    b+=R(x,y,w,h,fm);const iw=w-2*f,lw=iw*.54,g=f*.7;
+    b+=R(x+f,y+f,lw,h-2*f,fm)+glass(x+f+g,y+f+g,lw-2*g,h-2*f-2*g);
+    b+=R(x+f+iw-lw,y+f,lw,h-2*f,fm)+glass(x+f+iw-lw+g,y+f+g,lw-2*g,h-2*f-2*g);
+    b+=`<path d="M${x+w*.58} ${y+h/2} h${w*.2} m-6 -5 l6 5 l-6 5" fill="none" stroke="var(--ink)" stroke-width="1.6"/>`;
+    b+=dimH(x,x+w,y+h+14,cm(it.w)+' cm')+dimV(x-14,y,y+h,cm(it.h)+' cm');
+  } else if(it.kind==='door'){
+    b+=R(x,y,w,h,fm);const p=f*1.3;
+    if(it.style==='entry'){
+      b+=glass(x+p,y+p,w-2*p,h*.28)+R(x+p,y+p*2+h*.28,w-2*p,h-p*3-h*.28,fm,'fill-opacity="1"');
+      b+=`<rect x="${x+p*2}" y="${y+p*3+h*.28}" width="${w-4*p}" height="${h-p*5-h*.28}" fill="none" stroke="var(--ink)" stroke-opacity=".35"/>`;
+    } else {
+      const ph=(h-3*p)/2;
+      for(let k=0;k<2;k++)b+=`<rect x="${x+p}" y="${y+p+k*(ph+p)}" width="${w-2*p}" height="${ph}" fill="none" stroke="var(--ink)" stroke-opacity=".35"/>`;
+    }
+    b+=`<circle cx="${x+w-p*.9}" cy="${y+h*.52}" r="${Math.max(3,w*.045)}" style="fill:var(--ink)" opacity=".8"/>`;
+    b+=dimH(x,x+w,y+h+14,cm(it.w)+' cm')+dimV(x-14,y,y+h,cm(it.h)+' cm');
+  } else if(it.kind==='rad'){
+    const n=it.n,ew=w/n;
+    for(let i=0;i<n;i++)b+=R(x+i*ew+1,y+4,ew-2,h-8,fm,'rx="5"')+`<line x1="${x+i*ew+ew/2}" y1="${y+16}" x2="${x+i*ew+ew/2}" y2="${y+h-16}" stroke="var(--ink)" stroke-opacity=".3"/>`;
+    b+=R(x-3,y,w+6,8,fm)+R(x-3,y+h-8,w+6,8,fm);
+    b+=dimH(x,x+w,y+h+14,cm(it.w)+' cm')+dimV(x-14,y,y+h,cm(it.h)+' cm');
+  }
+  return b;
+}
+function drawBeam(it){
+  let b='';const x=50,w=220,y=44,h=34;
+  b+=R(x,y,w,h,`var(--m-${it.mat})`);
+  if(it.mat==='wood'){[.25,.5,.75].forEach(k=>b+=`<line x1="${x}" y1="${y+h*k}" x2="${x+w}" y2="${y+h*k}" stroke="var(--ink)" stroke-opacity=".18"/>`);b+=`<ellipse cx="${x+w*.62}" cy="${y+h*.5}" rx="9" ry="4" fill="none" stroke="var(--ink)" stroke-opacity=".3"/>`}
+  else b+=`<line x1="${x}" y1="${y+7}" x2="${x+w}" y2="${y+7}" stroke="var(--ink)" stroke-opacity=".45"/><line x1="${x}" y1="${y+h-7}" x2="${x+w}" y2="${y+h-7}" stroke="var(--ink)" stroke-opacity=".45"/>`;
+  b+=dimH(x,x+w,y+h+14,(it.len/100).toFixed(2).replace('.',',')+' m');
+  const s=Math.min(70/it.sw,52/it.sh),sw=it.sw*s,sh=it.sh*s,sx=165-sw/2,sy=132;
+  if(it.mat==='steel'){const t=sh*.13,tw=sw*.12;
+    b+=`<polygon class="o" style="fill:var(--m-steel)" points="${sx},${sy} ${sx+sw},${sy} ${sx+sw},${sy+t} ${sx+sw/2+tw/2},${sy+t} ${sx+sw/2+tw/2},${sy+sh-t} ${sx+sw},${sy+sh-t} ${sx+sw},${sy+sh} ${sx},${sy+sh} ${sx},${sy+sh-t} ${sx+sw/2-tw/2},${sy+sh-t} ${sx+sw/2-tw/2},${sy+t} ${sx},${sy+t}"/>`;}
+  else b+=R(sx,sy,sw,sh,'var(--m-wood)')+`<circle cx="${sx+sw/2}" cy="${sy+sh/2}" r="${Math.min(sw,sh)*.22}" fill="none" stroke="var(--ink)" stroke-opacity=".3"/><circle cx="${sx+sw/2}" cy="${sy+sh/2}" r="${Math.min(sw,sh)*.1}" fill="none" stroke="var(--ink)" stroke-opacity=".3"/>`;
+  b+=cap('section '+(it.mat==='steel'?'IPE 200 · 100 × 200 mm':cm(it.sw)+' × '+cm(it.sh)+' cm'));
+  return b;
+}
+function drawMason(it){
+  let b='';
+  if(it.kind==='brick'){
+    const bw=50,bh=23,ox=60,oy=44;
+    for(let r=0;r<4;r++){const y=oy+r*(bh+2);
+      if(r%2===0)for(let k=0;k<4;k++)b+=R(ox+k*(bw),y,bw-2,bh,'var(--m-brick)');
+      else{b+=R(ox,y,bw/2-2,bh,'var(--m-brick)');for(let k=0;k<3;k++)b+=R(ox+bw/2+k*bw,y,bw-2,bh,'var(--m-brick)');b+=R(ox+bw/2+3*bw,y,bw/2-2,bh,'var(--m-brick)')}}
+    b+=cap('brique 22 × 10,5 × 6,5 cm · palette de 400');
+  } else if(it.kind==='roof'){
+    const tw=40,th=36,ox=60,oy=38;
+    for(let r=0;r<5;r++){const y=oy+r*22;
+      const row=[];for(let k=0;k<5;k++)row.push(ox+k*tw+(r%2?-tw/2+tw/2:0));
+      for(let k=0;k<(r%2?4:5);k++){const x=ox+k*tw+(r%2?tw/2:0);
+        b+=`<path class="o" style="fill:var(--m-tuile)" d="M${x} ${y} h${tw-2} v${th-10} q0 10 -${(tw-2)/2} 10 q-${(tw-2)/2} 0 -${(tw-2)/2} -10 z"/><line x1="${x+(tw-2)/2}" y1="${y+4}" x2="${x+(tw-2)/2}" y2="${y+th-8}" stroke="var(--ink)" stroke-opacity=".25"/>`;}}
+    b+=cap('tuile mécanique · lot de 500');
+  } else if(it.kind==='tile'){
+    const a=50,ox=60,oy=44;
+    for(let r=0;r<3;r++)for(let k=0;k<4;k++){const x=ox+k*a,y=oy+r*a,alt=(r+k)%2;
+      b+=R(x,y,a,a,alt?'var(--m-t2)':'var(--m-t1)')+`<polygon points="${x+a/2},${y+6} ${x+a-6},${y+a/2} ${x+a/2},${y+a-6} ${x+6},${y+a/2}" style="fill:${alt?'var(--m-t1)':'var(--m-t2)'}" stroke="none"/>`;}
+    b+=cap('carreau de ciment 20 × 20 cm');
+  }
+  return b;
+}
+function draw(it){
+  const inner=it.kind==='beam'?drawBeam(it):['brick','roof','tile'].includes(it.kind)?drawMason(it):drawBox(it);
+  return `<svg class="art" viewBox="0 0 320 240" role="img" aria-label="Schéma coté : ${it.name}">${inner}</svg>`;
+}
+
+/* ---------- état ---------- */
+let cat='all',cart={};
+const state=()=>({q:$('#q').value.trim().toLowerCase(),sort:$('#sort').value,only:$('#onlyStock').checked});
+
+function buildChips(){
+  const c=$('#chips');const all=[['all','Tous']].concat(CAT_ORDER.map(k=>[k,CATS[k]]));
+  c.innerHTML=all.map(([k,l])=>`<button class="chip" data-cat="${k}" aria-pressed="${k===cat}">${l}</button>`).join('');
+  c.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cat=b.dataset.cat;[...c.children].forEach(x=>x.setAttribute('aria-pressed',x.dataset.cat===cat));render()};
+}
+function render(){
+  const s=state();
+  let list=ITEMS.filter(i=>(cat==='all'||i.cat===cat)&&(!s.only||i.stock>0)&&(!s.q||(i.name+' '+i.dim+' '+CATS[i.cat]+' '+i.id+' '+i.specs.map(x=>x[1]).join(' ')).toLowerCase().includes(s.q)));
+  if(s.sort==='pa')list.sort((a,b)=>a.price-b.price);
+  if(s.sort==='pd')list.sort((a,b)=>b.price-a.price);
+  if(s.sort==='eco')list.sort((a,b)=>saving(b)-saving(a));
+  $('#result').textContent=list.length+(list.length>1?' matériaux disponibles':' matériau disponible');
+  $('#grid').innerHTML=list.length?list.map(i=>{const [c,t]=status(i);return `<li><button class="card" data-id="${i.id}" style="width:100%;height:100%;cursor:pointer;color:inherit;font:inherit">
+    <span class="art-box">${draw(i)}<span class="grade" title="${GRADE[i.grade]}">Grade ${i.grade}</span><span class="save">-${saving(i)} %</span></span>
+    <span class="card-body"><span class="ref">${i.id} · ${CATS[i.cat]}</span><h3>${i.name}</h3><span class="dimline">${i.dim}</span>
+    <span class="pill ${c}">${t}</span>
+    <span class="priceline"><span class="price">${eur(i.price)} <small>/ ${i.unit}</small></span><span class="old">${eur(i.neuf)} neuf</span></span></span></button></li>`}).join(''):`<li class="empty">Aucun matériau ne correspond. Essayez un autre mot ou décochez « En stock uniquement ».</li>`;
+}
+$('#grid').addEventListener('click',e=>{const b=e.target.closest('.card');if(b)openDetail(b.dataset.id,b)});
+['q','sort','onlyStock'].forEach(id=>$('#'+id).addEventListener('input',render));
+
+/* ---------- fenêtres modales ---------- */
+let lastFocus=null;
+function openLayer(html,cls){
+  lastFocus=document.activeElement;
+  $('#layer').innerHTML=`<div class="scrim" id="scrim">${html}</div>`;
+  document.body.style.overflow='hidden';
+  const sc=$('#scrim');sc.addEventListener('mousedown',e=>{if(e.target===sc)closeLayer()});
+  const x=sc.querySelector('.x');if(x)x.addEventListener('click',closeLayer);
+  (sc.querySelector('[data-autofocus]')||x)?.focus();
+}
+function closeLayer(){$('#layer').innerHTML='';document.body.style.overflow='';lastFocus&&lastFocus.focus&&lastFocus.focus()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#scrim'))closeLayer()});
+
+function openDetail(id){
+  const i=byId(id),[c,t]=status(i);let qty=1;
+  const max=i.stock>0?i.stock:20;
+  const hasMain=cart[id]||0;
+  openLayer(`<div class="sheet" role="dialog" aria-modal="true" aria-label="${i.name}">
+    <button class="x" aria-label="Fermer">?</button>
+    <div class="detail"><div class="art-box">${draw(i)}<span class="grade">Grade ${i.grade} · ${GRADE[i.grade]}</span></div>
+    <div class="info">
+      <div><span class="ref">${i.id} · ${CATS[i.cat]}</span><h2>${i.name}</h2></div>
+      <span class="pill ${c}">${t}${i.stock===0?' · '+i.arrivage:''}</span>
+      <dl class="specs"><dt>Dimensions</dt><dd>${i.dim}</dd>${i.specs.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}
+        <dt>Provenance</dt><dd>${i.origin}</dd><dt>Retrait</dt><dd>${i.city}</dd><dt>Reconditionnement</dt><dd>${i.reco}</dd></dl>
+      <div class="buy">
+        <div class="buy-row"><div><span class="price" style="font-size:30px">${eur(i.price)}</span> <small style="color:var(--muted)">/ ${i.unit}</small><br><span class="old">${eur(i.neuf)} neuf</span> <span class="pill ok" style="padding:1px 8px">-${saving(i)} %</span></div>
+        <div class="step" role="group" aria-label="Quantité"><button type="button" id="mn" aria-label="Moins">-</button><output id="qv">1</output><button type="button" id="pl" aria-label="Plus">+</button></div></div>
+        <div class="buy-row"><span class="total" id="tot"></span><button class="btn primary" id="add" data-autofocus>${i.stock===0?'Réserver l\'arrivage':'Ajouter à ma demande'}</button></div>
+      </div>
+      <div class="eco"><i></i><span>Réutiliser cette pièce évite environ ${i.co2} kg de CO2 par ${i.unit.split(' ')[0]} par rapport à un produit neuf (estimation).</span></div>
+    </div></div></div>`);
+  const upd=()=>{$('#qv').textContent=qty;$('#tot').textContent=eur(qty*i.price)};upd();
+  $('#mn').onclick=()=>{qty=Math.max(1,qty-1);upd()};
+  $('#pl').onclick=()=>{if(qty<max)qty++;else toast('Stock maximum atteint');upd()};
+  $('#add').onclick=()=>{cart[id]=Math.min((cart[id]||0)+qty,max);updCart();closeLayer();toast(i.name+' ajouté à votre demande')};
+}
+
+function updCart(){$('#cartCount').textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
+$('#openCart').onclick=openCart;
+function openCart(){
+  const ids=Object.keys(cart);
+  const total=ids.reduce((a,id)=>a+cart[id]*byId(id).price,0);
+  const lines=ids.length?ids.map(id=>{const i=byId(id);return `<li class="line"><span class="art-box">${draw(i)}</span><span><b>${i.name}</b><small>${cart[id]} × ${eur(i.price)} · ${i.city}</small><br><button class="rm" data-rm="${id}">Retirer</button></span><b>${eur(cart[id]*i.price)}</b></li>`}).join(''):`<li class="empty" style="padding:28px 8px">Votre demande est vide. Ouvrez une fiche et ajoutez un matériau.</li>`;
+  openLayer(`<div class="sheet drawer" role="dialog" aria-modal="true" aria-label="Ma demande">
+    <button class="x" aria-label="Fermer">?</button><h2>Ma demande</h2>
+    <ul class="lines">${lines}</ul>
+    ${ids.length?`<div class="sum"><span>Total estimé</span><strong>${eur(total)}</strong></div>
+    <form class="form" id="reqForm" novalidate>
+      <label for="rName">Nom ou entreprise<input class="field" id="rName" required data-autofocus></label>
+      <label for="rMail">E-mail<input class="field" id="rMail" type="email" required></label>
+      <button class="btn primary" type="submit" style="justify-content:center">Envoyer ma demande</button>
+      <p class="note" id="reqNote">Le retrait se fait sur le lieu de stockage. Version de démonstration : rien n'est transmis.</p></form>`:''}
+  </div>`);
+  $('#scrim').addEventListener('click',e=>{const r=e.target.closest('[data-rm]');if(r){delete cart[r.dataset.rm];updCart();openCart()}});
+  const f=$('#reqForm');if(f)f.onsubmit=e=>{e.preventDefault();
+    if(!$('#rName').value.trim()||!/\S+@\S+\.\S+/.test($('#rMail').value)){$('#reqNote').textContent='Indiquez un nom et une adresse e-mail valide.';$('#reqNote').style.color='var(--low)';return}
+    const n=$('#rName').value.trim();cart={};updCart();
+    $('.drawer').innerHTML=`<button class="x" aria-label="Fermer">?</button><div class="ok-msg"><h3>Demande enregistrée</h3><p>Merci ${n}. Dans la version réelle de BTP Reval, un conseiller vous recontacte sous 24 h pour confirmer le stock et organiser le retrait.</p><p class="note">Démonstration : aucune donnée n'a été envoyée.</p><button class="btn primary" id="okClose" data-autofocus style="justify-self:start">Retour au catalogue</button></div>`;
+    $('#okClose').onclick=closeLayer;$('.drawer .x').onclick=closeLayer;$('#okClose').focus()};
+}
+
+$('#sellForm').addEventListener('submit',e=>{e.preventDefault();
+  const n=$('#sellNote');
+  if(!/\S+@\S+\.\S+/.test($('#sMail').value)||!$('#sCity').value.trim()){n.textContent='Renseignez la ville du chantier et une adresse e-mail valide.';n.style.color='var(--low)';return}
+  n.style.color='var(--ok)';n.textContent='Lot enregistré : '+$('#sQty').value+' × '+$('#sType').value.toLowerCase()+' à '+$('#sCity').value.trim()+'. Démonstration : rien n\'est envoyé.';});
+
+/* ---------- chiffres, lien, QR ---------- */
+$('#fRefs').textContent=ITEMS.length;
+$('#fSave').textContent='-'+Math.round(ITEMS.reduce((a,i)=>a+saving(i),0)/ITEMS.length)+' %';
+$('#fCats').textContent=CAT_ORDER.length;
+buildChips();render();
+</script>
