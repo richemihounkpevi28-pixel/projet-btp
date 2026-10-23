@@ -1,15 +1,9 @@
-
-<head>
-    <meta charset="UTF-8">
-    <title>BTP Reval</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>BTP Reval</title>
-<style>html,body{margin:0}</style>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-</head>
-
 <style>
 /* Layout: sticky header, compact hero with 3 live figures, filter bar, responsive card grid, detail sheet + request drawer, sell steps, mobile QR block. */
 :root{
@@ -195,7 +189,7 @@ button{cursor:pointer}
     <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="9" width="28" height="14" rx="2" fill="var(--accent)"/><path d="M9 16h14M16 9v14M9 9v7M23 16v7" stroke="var(--accent-ink)" stroke-width="1.6" fill="none"/><path d="M6 5.5A12 12 0 0 1 26 5.5" stroke="var(--signal)" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M26.5 2.5v4.5H22" stroke="var(--signal)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <span>BTP <b>Reval</b></span>
   </a>
-  <nav class="nav" aria-label="Sections"><a href="#catalogue">Catalogue</a><a href="#vendre">Vendre</a></nav>
+  <nav class="nav" aria-label="Sections"><a href="#catalogue">Catalogue</a><a href="#vendre">Vendre</a><a href="#mobile">Sur mobile</a></nav>
   <span class="spacer"></span>
   <button class="btn primary" id="openCart" aria-haspopup="dialog">Ma demande <span class="count" id="cartCount">0</span></button>
 </div></header>
@@ -217,7 +211,7 @@ button{cursor:pointer}
     <div class="bar">
       <div class="chips" id="chips" role="group" aria-label="Famille de matériaux"></div>
       <span class="spacer"></span>
-      <input class="field search" id="q" type="search" placeholder="Rechercher : fenêtre, chêne, 120 cm" aria-label="Rechercher un matériau">
+      <input class="field search" id="q" type="search" placeholder="Rechercher : fenêtre, chêne, 120 cm…" aria-label="Rechercher un matériau">
       <select class="field" id="sort" aria-label="Trier">
         <option value="rel">Tri : pertinence</option>
         <option value="pa">Prix croissant</option>
@@ -258,6 +252,17 @@ button{cursor:pointer}
   </div>
 </div></section>
 
+<section class="sec" id="mobile"><div class="wrap">
+  <div class="mobile">
+    <div class="qrbox" id="qrbox"><img id="qr" alt="QR code vers la plateforme BTP Reval" src="" hidden></div>
+    <div>
+      <h2>Ouvrir BTP Reval sur votre téléphone</h2>
+      <p class="lead" style="margin-bottom:12px">Scannez ce code avec l'appareil photo pour arriver directement sur le catalogue.</p>
+      <p class="note" id="linkTxt"></p>
+    </div>
+  </div>
+</div></section>
+
 <footer class="wrap foot"><span>BTP Reval, plateforme collaborative de réemploi des matériaux du BTP.</span><span>Catalogue d'exemple pour un projet de présentation : produits, prix et stocks illustratifs.</span></footer>
 
 <div id="layer"></div>
@@ -269,29 +274,29 @@ const CATS={fen:'Fenêtres',por:'Portes',pou:'Poutres',mac:'Maçonnerie et sol',
 const GRADE={A:'Comme neuf',B:'Bon état',C:'À reconditionner'};
 const ITEMS=[
 {id:'FEN-014',cat:'fen',name:'Fenêtre PVC blanc, 2 vantaux',kind:'window',leaves:2,mat:'pvc',w:120,h:135,dim:'120 × 135 cm',price:95,neuf:320,stock:12,unit:'pièce',grade:'A',origin:'Rénovation d\'une résidence',city:'Orléans (45)',co2:55,
- specs:[['Matériau','PVC blanc, double vitrage 4/16/4'],['Ouverture','2 vantaux, oscillo-battant'],['Isolation','Uw  1,4 W/m²K'],['Quincaillerie','Poignées et paumelles d\'origine']],reco:'Nettoyage complet, joints remplacés, quincaillerie graissée.'},
+ specs:[['Matériau','PVC blanc, double vitrage 4/16/4'],['Ouverture','2 vantaux, oscillo-battant'],['Isolation','Uw ≈ 1,4 W/m²K'],['Quincaillerie','Poignées et paumelles d\'origine']],reco:'Nettoyage complet, joints remplacés, quincaillerie graissée.'},
 {id:'FEN-021',cat:'fen',name:'Fenêtre chêne, 1 vantail',kind:'window',leaves:1,mat:'wood',w:80,h:120,dim:'80 × 120 cm',price:70,neuf:260,stock:6,unit:'pièce',grade:'B',origin:'Maison de ville en réhabilitation',city:'Tours (37)',co2:35,
  specs:[['Matériau','Chêne massif, double vitrage'],['Ouverture','1 vantail à la française'],['Finition','Lasure à reprendre'],['Quincaillerie','Espagnolette laiton']],reco:'Ponçage léger et vitrage vérifié. Lasure non refaite.'},
 {id:'FEN-033',cat:'fen',name:'Baie coulissante aluminium',kind:'slider',mat:'alu',w:240,h:215,dim:'240 × 215 cm',price:480,neuf:1400,stock:3,unit:'pièce',grade:'B',origin:'Bureaux désaffectés',city:'Blois (41)',co2:210,
- specs:[['Matériau','Aluminium gris anthracite, double vitrage'],['Ouverture','2 vantaux coulissants'],['Isolation','Rupture de pont thermique'],['Poids',' 95 kg']],reco:'Galets de roulement changés, rails nettoyés.'},
+ specs:[['Matériau','Aluminium gris anthracite, double vitrage'],['Ouverture','2 vantaux coulissants'],['Isolation','Rupture de pont thermique'],['Poids','≈ 95 kg']],reco:'Galets de roulement changés, rails nettoyés.'},
 {id:'POR-008',cat:'por',name:'Porte intérieure postformée',kind:'door',style:'panel',mat:'door',w:83,h:204,dim:'83 × 204 cm',price:25,neuf:70,stock:28,unit:'pièce',grade:'A',origin:'Démolition d\'un immeuble de bureaux',city:'Orléans (45)',co2:12,
  specs:[['Matériau','Âme alvéolaire, finition blanche'],['Épaisseur','40 mm'],['Sens','Réversible, à repercer'],['Livrée','Sans huisserie']],reco:'Dépoussiérée et contrôlée, sans choc ni gauchissement.'},
 {id:'POR-015',cat:'por',name:'Porte d\'entrée bois, vitrée',kind:'door',style:'entry',mat:'wood',w:90,h:215,dim:'90 × 215 cm',price:220,neuf:900,stock:2,unit:'pièce',grade:'A',origin:'Rénovation d\'une longère',city:'Chartres (28)',co2:70,
  specs:[['Matériau','Chêne massif, 45 mm'],['Vitrage','Fenêtre haute, verre feuilleté'],['Serrure','Multipoints, 3 clés'],['Finition','Vernis, dernière couche récente']],reco:'Serrure révisée, joints d\'étanchéité neufs.'},
 {id:'POU-003',cat:'pou',name:'Poutre chêne massif',kind:'beam',mat:'wood',len:420,sw:20,sh:25,w:420,h:25,dim:'420 cm, section 20 × 25 cm',price:290,neuf:620,stock:9,unit:'pièce',grade:'A',origin:'Charpente d\'une grange',city:'Vendôme (41)',co2:140,
- specs:[['Essence','Chêne, séché plus de 50 ans'],['Longueur','4,20 m'],['Section','20 × 25 cm'],['Poids',' 105 kg'],['Traitement','Contrôlé sans insectes ni humidité']],reco:'Brossée, traitée préventif, purge des clous.'},
+ specs:[['Essence','Chêne, séché plus de 50 ans'],['Longueur','4,20 m'],['Section','20 × 25 cm'],['Poids','≈ 105 kg'],['Traitement','Contrôlé sans insectes ni humidité']],reco:'Brossée, traitée préventif, purge des clous.'},
 {id:'POU-011',cat:'pou',name:'Poutrelle acier IPE 200',kind:'beam',mat:'steel',len:600,sw:10,sh:20,w:600,h:20,dim:'600 cm, profil IPE 200',price:150,neuf:290,stock:5,unit:'pièce',grade:'B',origin:'Structure d\'un entrepôt',city:'Orléans (45)',co2:260,
- specs:[['Profil','IPE 200 (100 × 200 mm)'],['Longueur','6,00 m'],['Nuance','S235'],['Poids',' 135 kg'],['Surface','Rouille de surface, sans corrosion profonde']],reco:'Grenaillée et protégée par une couche antirouille.'},
+ specs:[['Profil','IPE 200 (100 × 200 mm)'],['Longueur','6,00 m'],['Nuance','S235'],['Poids','≈ 135 kg'],['Surface','Rouille de surface, sans corrosion profonde']],reco:'Grenaillée et protégée par une couche antirouille.'},
 {id:'POU-020',cat:'pou',name:'Solive sapin',kind:'beam',mat:'wood',len:300,sw:6.3,sh:17.5,w:300,h:17.5,dim:'300 cm, section 6,3 × 17,5 cm',price:9,neuf:19,stock:40,unit:'pièce',grade:'B',origin:'Plancher d\'un pavillon',city:'Orléans (45)',co2:9,
  specs:[['Essence','Sapin / épicéa'],['Longueur','3,00 m'],['Section','6,3 × 17,5 cm'],['Usage','Plancher, ossature, aménagements'],['Remarque','Trous de pointes à prévoir']],reco:'Triées une à une, purgées des pointes.'},
 {id:'MAC-002',cat:'mac',name:'Briques pleines anciennes',kind:'brick',mat:'brick',w:22,h:6.5,dim:'22 × 10,5 × 6,5 cm',price:180,neuf:420,stock:4,unit:'palette de 400',grade:'B',origin:'Mur de clôture démonté',city:'Gien (45)',co2:150,
  specs:[['Format','22 × 10,5 × 6,5 cm'],['Quantité','400 briques par palette'],['Usage','Parement, muret, cheminée'],['Aspect','Teintes variées, mortier nettoyé']],reco:'Nettoyage au marteau et à la brosse, tri des éclats.'},
-{id:'MAC-005',cat:'mac',name:'Tuiles mécaniques terre cuite',kind:'roof',mat:'tuile',w:42,h:26,dim:' 22 tuiles/m²',price:110,neuf:350,stock:0,unit:'lot de 500',grade:'B',origin:'Toiture d\'une maison',city:'Montargis (45)',co2:120,arrivage:'arrivage sous 3 semaines',
- specs:[['Matériau','Terre cuite, teinte rouge flammé'],['Densité',' 22 tuiles/m²'],['Quantité','500 tuiles par lot'],['Contrôle','Sans fissure, test d\'égouttage']],reco:'Lavage haute pression et tri des tuiles saines.'},
+{id:'MAC-005',cat:'mac',name:'Tuiles mécaniques terre cuite',kind:'roof',mat:'tuile',w:42,h:26,dim:'≈ 22 tuiles/m²',price:110,neuf:350,stock:0,unit:'lot de 500',grade:'B',origin:'Toiture d\'une maison',city:'Montargis (45)',co2:120,arrivage:'arrivage sous 3 semaines',
+ specs:[['Matériau','Terre cuite, teinte rouge flammé'],['Densité','≈ 22 tuiles/m²'],['Quantité','500 tuiles par lot'],['Contrôle','Sans fissure, test d\'égouttage']],reco:'Lavage haute pression et tri des tuiles saines.'},
 {id:'MAC-009',cat:'mac',name:'Carreaux de ciment 20 × 20',kind:'tile',mat:'t1',w:20,h:20,dim:'20 × 20 cm, 14 m² dispo',price:38,neuf:95,stock:14,unit:'m²',grade:'B',origin:'Sol d\'un ancien commerce',city:'Orléans (45)',co2:18,
  specs:[['Format','20 × 20 cm, épaisseur 16 mm'],['Motif','Losange bleu-vert et blanc cassé'],['Quantité','14 m² (350 carreaux)'],['Remarque','Patine d\'usage, à poser et cirer']],reco:'Décollés, brossés et débarrassés de leur colle.'},
 {id:'RAD-004',cat:'equ',name:'Radiateur fonte, 8 éléments',kind:'rad',mat:'cast',n:8,w:64,h:80,dim:'64 × 80 cm, 8 éléments',price:85,neuf:410,stock:2,unit:'pièce',grade:'A',origin:'Ancienne école',city:'Pithiviers (45)',co2:90,
- specs:[['Matériau','Fonte, peinte'],['Éléments','8, entraxe 70 cm'],['Dimensions','64 × 80 cm, profondeur 20 cm'],['Poids',' 60 kg'],['Essai','Test de pression réussi']],reco:'Décapé, testé en pression, repeint en blanc.'}
+ specs:[['Matériau','Fonte, peinte'],['Éléments','8, entraxe 70 cm'],['Dimensions','64 × 80 cm, profondeur 20 cm'],['Poids','≈ 60 kg'],['Essai','Test de pression réussi']],reco:'Décapé, testé en pression, repeint en blanc.'}
 ];
 const CAT_ORDER=['fen','por','pou','mac','equ'];
 
@@ -409,7 +414,7 @@ function render(){
   if(s.sort==='eco')list.sort((a,b)=>saving(b)-saving(a));
   $('#result').textContent=list.length+(list.length>1?' matériaux disponibles':' matériau disponible');
   $('#grid').innerHTML=list.length?list.map(i=>{const [c,t]=status(i);return `<li><button class="card" data-id="${i.id}" style="width:100%;height:100%;cursor:pointer;color:inherit;font:inherit">
-    <span class="art-box">${draw(i)}<span class="grade" title="${GRADE[i.grade]}">Grade ${i.grade}</span><span class="save">-${saving(i)} %</span></span>
+    <span class="art-box">${draw(i)}<span class="grade" title="${GRADE[i.grade]}">Grade ${i.grade}</span><span class="save">−${saving(i)} %</span></span>
     <span class="card-body"><span class="ref">${i.id} · ${CATS[i.cat]}</span><h3>${i.name}</h3><span class="dimline">${i.dim}</span>
     <span class="pill ${c}">${t}</span>
     <span class="priceline"><span class="price">${eur(i.price)} <small>/ ${i.unit}</small></span><span class="old">${eur(i.neuf)} neuf</span></span></span></button></li>`}).join(''):`<li class="empty">Aucun matériau ne correspond. Essayez un autre mot ou décochez « En stock uniquement ».</li>`;
@@ -435,7 +440,7 @@ function openDetail(id){
   const max=i.stock>0?i.stock:20;
   const hasMain=cart[id]||0;
   openLayer(`<div class="sheet" role="dialog" aria-modal="true" aria-label="${i.name}">
-    <button class="x" aria-label="Fermer">?</button>
+    <button class="x" aria-label="Fermer">✕</button>
     <div class="detail"><div class="art-box">${draw(i)}<span class="grade">Grade ${i.grade} · ${GRADE[i.grade]}</span></div>
     <div class="info">
       <div><span class="ref">${i.id} · ${CATS[i.cat]}</span><h2>${i.name}</h2></div>
@@ -443,11 +448,11 @@ function openDetail(id){
       <dl class="specs"><dt>Dimensions</dt><dd>${i.dim}</dd>${i.specs.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}
         <dt>Provenance</dt><dd>${i.origin}</dd><dt>Retrait</dt><dd>${i.city}</dd><dt>Reconditionnement</dt><dd>${i.reco}</dd></dl>
       <div class="buy">
-        <div class="buy-row"><div><span class="price" style="font-size:30px">${eur(i.price)}</span> <small style="color:var(--muted)">/ ${i.unit}</small><br><span class="old">${eur(i.neuf)} neuf</span> <span class="pill ok" style="padding:1px 8px">-${saving(i)} %</span></div>
-        <div class="step" role="group" aria-label="Quantité"><button type="button" id="mn" aria-label="Moins">-</button><output id="qv">1</output><button type="button" id="pl" aria-label="Plus">+</button></div></div>
+        <div class="buy-row"><div><span class="price" style="font-size:30px">${eur(i.price)}</span> <small style="color:var(--muted)">/ ${i.unit}</small><br><span class="old">${eur(i.neuf)} neuf</span> <span class="pill ok" style="padding:1px 8px">−${saving(i)} %</span></div>
+        <div class="step" role="group" aria-label="Quantité"><button type="button" id="mn" aria-label="Moins">−</button><output id="qv">1</output><button type="button" id="pl" aria-label="Plus">+</button></div></div>
         <div class="buy-row"><span class="total" id="tot"></span><button class="btn primary" id="add" data-autofocus>${i.stock===0?'Réserver l\'arrivage':'Ajouter à ma demande'}</button></div>
       </div>
-      <div class="eco"><i></i><span>Réutiliser cette pièce évite environ ${i.co2} kg de CO2 par ${i.unit.split(' ')[0]} par rapport à un produit neuf (estimation).</span></div>
+      <div class="eco"><i></i><span>Réutiliser cette pièce évite environ ${i.co2} kg de CO₂ par ${i.unit.split(' ')[0]} par rapport à un produit neuf (estimation).</span></div>
     </div></div></div>`);
   const upd=()=>{$('#qv').textContent=qty;$('#tot').textContent=eur(qty*i.price)};upd();
   $('#mn').onclick=()=>{qty=Math.max(1,qty-1);upd()};
@@ -462,7 +467,7 @@ function openCart(){
   const total=ids.reduce((a,id)=>a+cart[id]*byId(id).price,0);
   const lines=ids.length?ids.map(id=>{const i=byId(id);return `<li class="line"><span class="art-box">${draw(i)}</span><span><b>${i.name}</b><small>${cart[id]} × ${eur(i.price)} · ${i.city}</small><br><button class="rm" data-rm="${id}">Retirer</button></span><b>${eur(cart[id]*i.price)}</b></li>`}).join(''):`<li class="empty" style="padding:28px 8px">Votre demande est vide. Ouvrez une fiche et ajoutez un matériau.</li>`;
   openLayer(`<div class="sheet drawer" role="dialog" aria-modal="true" aria-label="Ma demande">
-    <button class="x" aria-label="Fermer">?</button><h2>Ma demande</h2>
+    <button class="x" aria-label="Fermer">✕</button><h2>Ma demande</h2>
     <ul class="lines">${lines}</ul>
     ${ids.length?`<div class="sum"><span>Total estimé</span><strong>${eur(total)}</strong></div>
     <form class="form" id="reqForm" novalidate>
@@ -475,7 +480,7 @@ function openCart(){
   const f=$('#reqForm');if(f)f.onsubmit=e=>{e.preventDefault();
     if(!$('#rName').value.trim()||!/\S+@\S+\.\S+/.test($('#rMail').value)){$('#reqNote').textContent='Indiquez un nom et une adresse e-mail valide.';$('#reqNote').style.color='var(--low)';return}
     const n=$('#rName').value.trim();cart={};updCart();
-    $('.drawer').innerHTML=`<button class="x" aria-label="Fermer">?</button><div class="ok-msg"><h3>Demande enregistrée</h3><p>Merci ${n}. Dans la version réelle de BTP Reval, un conseiller vous recontacte sous 24 h pour confirmer le stock et organiser le retrait.</p><p class="note">Démonstration : aucune donnée n'a été envoyée.</p><button class="btn primary" id="okClose" data-autofocus style="justify-self:start">Retour au catalogue</button></div>`;
+    $('.drawer').innerHTML=`<button class="x" aria-label="Fermer">✕</button><div class="ok-msg"><h3>Demande enregistrée</h3><p>Merci ${n}. Dans la version réelle de BTP Reval, un conseiller vous recontacte sous 24 h pour confirmer le stock et organiser le retrait.</p><p class="note">Démonstration : aucune donnée n'a été envoyée.</p><button class="btn primary" id="okClose" data-autofocus style="justify-self:start">Retour au catalogue</button></div>`;
     $('#okClose').onclick=closeLayer;$('.drawer .x').onclick=closeLayer;$('#okClose').focus()};
 }
 
@@ -486,7 +491,9 @@ $('#sellForm').addEventListener('submit',e=>{e.preventDefault();
 
 /* ---------- chiffres, lien, QR ---------- */
 $('#fRefs').textContent=ITEMS.length;
-$('#fSave').textContent='-'+Math.round(ITEMS.reduce((a,i)=>a+saving(i),0)/ITEMS.length)+' %';
+$('#fSave').textContent='−'+Math.round(ITEMS.reduce((a,i)=>a+saving(i),0)/ITEMS.length)+' %';
 $('#fCats').textContent=CAT_ORDER.length;
-buildChips();render();
+
 </script>
+
+</body></html>
