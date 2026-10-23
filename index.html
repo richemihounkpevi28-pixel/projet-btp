@@ -494,6 +494,8 @@ $('#fRefs').textContent=ITEMS.length;
 $('#fSave').textContent='−'+Math.round(ITEMS.reduce((a,i)=>a+saving(i),0)/ITEMS.length)+' %';
 $('#fCats').textContent=CAT_ORDER.length;
 
+$('#linkTxt').textContent=LINK.startsWith('http')?'Lien direct : '+LINK:'';
+buildChips();render();
 </script>
 
 </body></html>
